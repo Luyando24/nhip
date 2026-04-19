@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
-import { Brain, ArrowLeft, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { Brain, ArrowLeft, Loader2, Sparkles, AlertCircle, Target, CheckCircle } from 'lucide-react';
 
 const Questions = () => {
   const { id } = useParams<{ id: string }>();
