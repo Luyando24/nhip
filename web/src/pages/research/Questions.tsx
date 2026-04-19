@@ -34,35 +34,49 @@ const Questions = () => {
       // Get aggregated view data constraint
       const { data: viewData } = await supabase.from('research_mortality_view').select('*').limit(50);
       
-      const { data, error: funcError } = await supabase.functions.invoke('generate-research-questions', {
+      // Get current session explicitly for the latest token
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || accessToken;
+
+      if (!token) {
+        alert("Authentication Error: Your session has expired. Please log out and back in.");
+        setIsGenerating(false);
+        return;
+      }
+
+      // 1. We use standard fetch to have 100% control over headers
+      // 2. We use the public URL + /v1/functions/ + name
+      const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-research-questions`;
+
+      const response = await fetch(functionUrl, {
+        method: 'POST',
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          'Content-Type': 'application/json',
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${token}`
         },
-        body: {
+        body: JSON.stringify({
           proposalId: id,
           studyDesign,
           additionalContext: context,
           contextData: viewData || { note: 'Fallback mortality context' }
-        }
+        })
       });
-      
-      if (funcError) {
-        console.error('Network/Auth Error:', funcError);
-        throw funcError;
-      }
 
-      if (data && data.success === false) {
+      const result = await response.json();
+
+      if (!response.ok || result.success === false) {
           // This is our high-transparency error from the Edge Function
-          console.error('AI Service Detailed Error:', data);
+          console.error('AI Service Detailed Error:', result);
           let rec = "";
-          if (data.error === 'Forbidden') rec = "Tip: Your user role must be 'research_partner'.";
-          if (data.error === 'AI_SERVICE_ERROR') rec = "Tip: Verify your Anthropic API Key and credits.";
+          if (result.error === 'Forbidden') rec = "Tip: Your user role must be 'research_partner'.";
+          if (result.error === 'AI_SERVICE_ERROR') rec = "Tip: Verify your Anthropic API Key and credits.";
           
-          alert(`Intelligence Protocol Error (${data.error})\n\n${data.details || 'No details'}\n\n${rec}`);
+          alert(`Intelligence Protocol Error (${result.error || response.status})\n\n${result.details || 'No details'}\n\n${rec}`);
           return;
       }
       
-      setGeneratedResult(data);
+      setGeneratedResult(result.data);
     } catch (error: any) {
       console.error('[TRACE] Global Catch Error:', error);
       alert("System Interface Error\n\n" + (error.message || 'An unexpected error occurred.'));
