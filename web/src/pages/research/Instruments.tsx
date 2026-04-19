@@ -127,13 +127,14 @@ const Instruments = () => {
 
   const addField = () => {
     const id = Date.now().toString();
-    const randomSuffix = Math.random().toString(36).substring(2, 7);
+    const randomSeed = Math.random().toString(36).substring(2, 7);
     setFields([...fields, { 
       id, 
       label: 'New Field', 
       type: 'text', 
-      variableName: `var_${randomSuffix}`,
-      _isAuto: true // Track if we should keep syncing with the label
+      variableName: `var_${randomSeed}`,
+      _seed: randomSeed, // Permanent seed for this field
+      _isAuto: true 
     }]);
   };
 
@@ -154,8 +155,9 @@ const Instruments = () => {
                          !f.variableName;
                          
         if (updates.label && isDefault) {
-          newField.variableName = slugify(updates.label) || f.variableName;
-          newField._isAuto = true; // Still in auto-sync mode
+          const baseSlug = slugify(updates.label);
+          newField.variableName = baseSlug ? `${baseSlug}_${f._seed || f.id.slice(-4)}` : f.variableName;
+          newField._isAuto = true;
         }
         return newField;
       }
@@ -164,10 +166,13 @@ const Instruments = () => {
   };
 
   const syncAllVariables = () => {
-    setFields(fields.map(f => ({
-      ...f,
-      variableName: slugify(f.label) || f.variableName
-    })));
+    setFields(fields.map(f => {
+      const baseSlug = slugify(f.label);
+      return {
+        ...f,
+        variableName: baseSlug ? `${baseSlug}_${f._seed || f.id.slice(-4)}` : f.variableName
+      };
+    }));
   };
 
   const saveInstrument = async () => {

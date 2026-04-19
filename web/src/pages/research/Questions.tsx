@@ -42,10 +42,18 @@ const Questions = () => {
         }
       });
       
-      if (funcError) throw funcError;
+      if (funcError) {
+        // Log details to console for the developer
+        console.error('Edge Function Error:', funcError);
+        throw new Error(funcError.message);
+      }
+      
       setGeneratedResult(data);
     } catch (err: any) {
-      alert("Error: " + err.message);
+      console.error('AI Generation Failure:', err);
+      // Try to parse more details if it's a Supabase error
+      const detail = err.context?.error || err.message;
+      alert("Intelligence Interface Error: " + detail);
     } finally {
       setIsGenerating(false);
     }

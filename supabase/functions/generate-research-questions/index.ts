@@ -90,9 +90,9 @@ ${JSON.stringify(contextData, null, 2)}
         'content-type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-3-opus-20240229',
-        max_tokens: 1024,
-        temperature: 0.7,
+        model: 'claude-3-5-sonnet-20240620',
+        max_tokens: 1536,
+        temperature: 0.5,
         system: systemPrompt,
         messages: [{ role: 'user', content: promptContext }]
       })
