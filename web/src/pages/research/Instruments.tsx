@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layers, Plus, Save, Download, PlayCircle, Settings, Trash, ArrowLeft, Database, Edit, Share2, Copy, Check } from 'lucide-react';
+import { Layers, Plus, Save, Download, PlayCircle, Settings, Trash, ArrowLeft, Database, Edit, Share2, Copy, Check, Sparkles, Wand2 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { X } from 'lucide-react';
@@ -109,6 +109,13 @@ const Instruments = () => {
     }
   });
 
+  const slugify = (text: string) => {
+    return text.toLowerCase()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9_]/g, '')
+      .substring(0, 32);
+  };
+
   const handleEdit = (inst: any) => {
     setFields(inst.form_schema);
     setEditingInstrument(inst);
@@ -116,11 +123,35 @@ const Instruments = () => {
   };
 
   const addField = () => {
-    setFields([...fields, { id: Date.now().toString(), label: 'New Field', type: 'text', variableName: 'znhip_new_var' }]);
+    const id = Date.now().toString();
+    setFields([...fields, { id, label: 'New Field', type: 'text', variableName: `var_${id}` }]);
   };
 
   const updateField = (id: string, updates: any) => {
-    setFields(fields.map(f => f.id === id ? { ...f, ...updates } : f));
+    setFields(fields.map(f => {
+      if (f.id === id) {
+        let newField = { ...f, ...updates };
+        
+        // Auto-update variable name if it was a default or empty
+        const isDefault = f.variableName.startsWith('var_') || 
+                         f.variableName === 'znhip_new_var' || 
+                         f.variableName === 'znhip_patient_uid' || 
+                         !f.variableName;
+                         
+        if (updates.label && isDefault) {
+          newField.variableName = slugify(updates.label) || f.variableName;
+        }
+        return newField;
+      }
+      return f;
+    }));
+  };
+
+  const syncAllVariables = () => {
+    setFields(fields.map(f => ({
+      ...f,
+      variableName: slugify(f.label) || f.variableName
+    })));
   };
 
   const saveInstrument = async () => {
@@ -236,7 +267,16 @@ const Instruments = () => {
 
       {isBuilding ? (
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 animate-in fade-in slide-in-from-top-4 duration-300">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><Settings size={18} /> Form Builder</h3>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2"><Settings size={18} /> Form Builder</h3>
+            <button 
+              onClick={syncAllVariables}
+              className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-600 hover:text-white transition-all border border-indigo-100"
+              title="Auto-generate variable names for all fields"
+            >
+              <Wand2 size={14} /> Sync Variables to Labels
+            </button>
+          </div>
           <div className="space-y-4 max-w-3xl">
             {fields.map((field, index) => (
               <div key={field.id} className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex gap-4 items-center">
@@ -248,13 +288,22 @@ const Instruments = () => {
                   className="input-field flex-1"
                   placeholder="Field Label"
                 />
-                <input 
-                  type="text" 
-                  value={field.variableName} 
-                  onChange={(e) => updateField(field.id, { variableName: e.target.value })}
-                  className="input-field font-mono text-sm w-48"
-                  placeholder="variable_name"
-                />
+                <div className="relative flex-1 group/var">
+                  <input 
+                    type="text" 
+                    value={field.variableName} 
+                    onChange={(e) => updateField(field.id, { variableName: e.target.value })}
+                    className="input-field font-mono text-xs w-full pr-8"
+                    placeholder="variable_name"
+                  />
+                  <button 
+                    onClick={() => updateField(field.id, { variableName: slugify(field.label) })}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 hover:text-primary transition-colors opacity-0 group-hover/var:opacity-100"
+                    title="Generate from label"
+                  >
+                    <Sparkles size={12} />
+                  </button>
+                </div>
                 <select 
                   value={field.type}
                   onChange={(e) => updateField(field.id, { type: e.target.value })}

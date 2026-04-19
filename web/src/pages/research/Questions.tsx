@@ -28,28 +28,17 @@ const Questions = () => {
       // Get aggregated view data constraint
       const { data: viewData } = await supabase.from('research_mortality_view').select('*').limit(50);
       
-      const { data: session } = await supabase.auth.getSession();
-      
-      const res = await fetch(import.meta.env.VITE_SUPABASE_URL + '/functions/v1/generate-research-questions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.session?.access_token}`
-        },
-        body: JSON.stringify({
+      const { data, error: funcError } = await supabase.functions.invoke('generate-research-questions', {
+        body: {
           proposalId: id,
           studyDesign,
           additionalContext: context,
           contextData: viewData || { note: 'Fallback mortality context' }
-        })
+        }
       });
-
-      if (!res.ok) {
-        throw new Error('Failed to generate from Edge Function');
-      }
-
-      const result = await res.json();
-      setGeneratedResult(result);
+      
+      if (funcError) throw funcError;
+      setGeneratedResult(data);
     } catch (err: any) {
       alert("Error: " + err.message);
     } finally {
