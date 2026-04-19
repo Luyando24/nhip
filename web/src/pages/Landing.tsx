@@ -63,89 +63,71 @@ const Landing: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero Section (Asymmetrical with Floating UI) */}
-      <main className="relative z-10 max-w-7xl mx-auto px-8 pt-24 pb-20 lg:pt-32 lg:pb-32 flex flex-col lg:flex-row items-center gap-16">
+      {/* Hero Section (Centered with Role Logins) */}
+      <main className="relative z-10 max-w-7xl mx-auto px-8 pt-12 pb-16 lg:pt-16 flex flex-col items-center justify-center min-h-[75vh]">
         
-        {/* Left Content */}
-        <div className="flex-1 max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-8 animate-fade-in-down">
-             <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-             <span className="text-xs font-bold text-slate-600 uppercase tracking-widest">Active Intelligence V2.0</span>
-          </div>
+        {/* Centered Content */}
+        <div className="flex flex-col items-center text-center max-w-5xl mx-auto z-10 relative w-full">
           
-          <h2 className="text-6xl lg:text-[5.5rem] font-black tracking-tight leading-[1.05] mb-8 text-slate-900">
-            Intelligent<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-600 to-accent">
-              Health Data.
+          <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black tracking-tight leading-[1.05] mb-8 text-slate-900 drop-shadow-sm">
+            Empowering Zambia's <br className="hidden md:block"/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-500 to-indigo-600">
+              Health Intelligence.
             </span>
           </h2>
           
-          <p className="text-lg md:text-xl text-slate-600 font-medium leading-relaxed mb-10 max-w-xl">
-            A state-of-the-art national telemetry platform merging real-time mortality surveillance with localized AI diagnostics and predictive inventory analytics.
+          <p className="text-lg md:text-2xl text-slate-600/90 font-medium leading-relaxed mb-16 max-w-4xl">
+            Driving national health outcomes through state-of-the-art telemetry, predictive supply chain analytics, and <span className="text-slate-900 font-bold">Data-Driven Insights.</span>
           </p>
-          
-          <div className="flex flex-wrap gap-4">
-            <button 
-              onClick={() => navigate('/login')}
-              className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-xl font-bold transition-all shadow-[0_8px_30px_rgb(15,110,86,0.2)] hover:shadow-[0_8px_40px_rgb(15,110,86,0.3)] hover:-translate-y-0.5 flex items-center gap-2"
-            >
-              Initialize Workspace
-            </button>
-            <button className="bg-white border border-slate-200 text-slate-700 px-8 py-4 rounded-xl font-bold hover:bg-slate-50 hover:border-slate-300 transition-all flex items-center gap-2 shadow-sm">
-              <Zap size={18} className="text-accent" /> Architecture
-            </button>
-          </div>
-        </div>
 
-        {/* Right Content - Floating UI Composition */}
-        <div className="flex-1 relative w-full h-[500px] hidden lg:block perspective-1000">
-          
-          {/* Main Dashboard Card */}
-          <div className="absolute top-10 right-10 w-[400px] bg-white rounded-2xl border border-slate-200/60 shadow-2xl p-6 animate-float z-20">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center"><Activity size={16} className="text-primary" /></div>
-                <div>
-                  <div className="text-sm font-bold">National Mortality</div>
-                  <div className="text-[10px] text-slate-400">Live Telemetry</div>
-                </div>
-              </div>
-              <div className="text-xs bg-red-50 text-red-600 px-2 py-1 rounded font-bold">+12% Spike</div>
-            </div>
-            {/* Mock Chart Area */}
-            <div className="h-32 flex items-end gap-2 mt-4">
-              {[40, 25, 60, 45, 80, 50, 75].map((h, i) => (
-                <div key={i} className="flex-1 bg-gradient-to-t from-primary to-emerald-300 rounded-t-sm" style={{ height: `${h}%` }}></div>
-              ))}
-            </div>
-          </div>
-
-          {/* Floating AI Chat Card */}
-          <div className="absolute bottom-10 left-0 w-[320px] bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-200/60 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] p-5 animate-float-delayed z-30 transform -rotate-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles size={16} className="text-accent" />
-              <div className="text-xs font-bold text-slate-700">Digital Lab AI</div>
-            </div>
-            <div className="bg-slate-50 rounded-xl p-3 mb-3 border border-slate-100 text-xs text-slate-600">
-              "Patient presents with fever..."
-            </div>
-            <div className="bg-primary/5 rounded-xl p-3 border border-primary/10 text-xs text-slate-800 font-medium">
-              <p className="mb-2">Diagnosing Severe Malaria.</p>
-              <div className="flex items-center gap-1 text-[10px] bg-white px-2 py-1 rounded-md border border-slate-200 w-fit">
-                <Pill size={10} className="text-primary"/> 14 units Artemether local.
-              </div>
-            </div>
-          </div>
-
-          {/* Floating Alert Card */}
-          <div className="absolute top-0 left-10 w-[240px] bg-slate-900 text-white rounded-2xl border border-slate-800 shadow-2xl p-4 animate-float-fast z-10 transform rotate-3">
-             <div className="flex items-center gap-2 mb-2">
-               <Shield size={14} className="text-emerald-400" />
-               <span className="text-[10px] font-bold tracking-widest uppercase">System Secure</span>
+          {/* Quick Access Roles */}
+          <div className="w-full mt-4 max-w-4xl">
+             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-6 relative">
+                 <span className="bg-[#fafafc] px-4 relative z-10">Select Your Persona Portal</span>
+                 <span className="absolute top-1/2 left-0 w-full h-px bg-slate-200 z-0 border-dashed"></span>
+             </p>
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <button onClick={() => navigate('/login', { state: { email: 'dr.banda@uth.gov.zm' } })} className="group p-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(16,185,129,0.15)] hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300 text-left flex flex-col justify-between">
+                   <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                     <Activity size={28} className="text-emerald-600" />
+                   </div>
+                   <div className="flex-1">
+                     <h3 className="text-xl font-bold text-slate-800 mb-1">Clinical Terminal</h3>
+                     <p className="text-sm font-medium text-slate-500">Facility mortality & lab diagnostics</p>
+                   </div>
+                   <span className="mt-6 inline-flex items-center justify-center w-full py-2.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-sm group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-300 gap-2">
+                     Login Account <ArrowRight size={16} />
+                   </span>
+                </button>
+                
+                <button onClick={() => navigate('/login', { state: { email: 'ministry@znhip.gov.zm' } })} className="group p-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(99,102,241,0.15)] hover:border-indigo-500/40 hover:-translate-y-1 transition-all duration-300 text-left flex flex-col justify-between relative overflow-hidden">
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-bl-full group-hover:scale-150 transition-transform duration-700"></div>
+                   <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 relative z-10">
+                     <Globe size={28} className="text-indigo-600" />
+                   </div>
+                   <div className="relative z-10 flex-1">
+                     <h3 className="text-xl font-bold text-slate-800 mb-1">Ministry Oversight</h3>
+                     <p className="text-sm font-medium text-slate-500">National telemetry & policy alerts</p>
+                   </div>
+                   <span className="mt-6 relative z-10 inline-flex items-center justify-center w-full py-2.5 rounded-xl bg-indigo-50 text-indigo-700 font-bold text-sm group-hover:bg-indigo-500 group-hover:text-white transition-colors duration-300 gap-2">
+                     Login Account <ArrowRight size={16} />
+                   </span>
+                </button>
+                
+                <button onClick={() => navigate('/login', { state: { email: 'cidrz.research@znhip.gov.zm' } })} className="group p-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(59,130,246,0.15)] hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 text-left flex flex-col justify-between">
+                   <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                     <BrainCircuit size={28} className="text-blue-600" />
+                   </div>
+                   <div className="flex-1">
+                     <h3 className="text-xl font-bold text-slate-800 mb-1">Research Intelligence</h3>
+                     <p className="text-sm font-medium text-slate-500">AI pipelines & aggregated analysis</p>
+                   </div>
+                   <span className="mt-6 inline-flex items-center justify-center w-full py-2.5 rounded-xl bg-blue-50 text-blue-700 font-bold text-sm group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300 gap-2">
+                     Login Account <ArrowRight size={16} />
+                   </span>
+                </button>
              </div>
-             <p className="text-xs text-slate-400">End-to-end encryption active across all provincial nodes.</p>
           </div>
-
         </div>
       </main>
 
@@ -240,6 +222,30 @@ const Landing: React.FC = () => {
              
              <div className="ml-auto hidden md:block opacity-50 group-hover:opacity-100 transition-opacity duration-700">
                 <Globe size={120} className="text-emerald-500 flex-shrink-0 animate-[spin_60s_linear_infinite]" />
+             </div>
+          </div>
+
+          {/* Large Hero Bento - Research Partners */}
+          <div className="md:col-span-3 group relative overflow-hidden bg-gradient-to-br from-indigo-50 to-primary/5 rounded-3xl border border-indigo-100 shadow-sm hover:shadow-xl transition-all duration-500 p-8 flex flex-col md:flex-row items-center gap-8">
+             <div className="relative z-10 flex-1">
+               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-indigo-200 mb-4 shadow-sm">
+                 <BrainCircuit size={14} className="text-indigo-600" />
+                 <span className="text-xs font-bold text-indigo-900 uppercase tracking-widest">New: Research Intelligence</span>
+               </div>
+               <h4 className="text-2xl font-bold text-slate-900 mb-2">Empowering Health Research Institutes</h4>
+               <p className="text-slate-600 font-medium max-w-2xl">
+                 ZNHIP now extends its capabilities to external researchers like CIDRZ. Generate PICO-formatted AI hypotheses, build custom data collection endpoints (REDCap/ODK compatible), and correlate public health metrics in our secure Data Analysis Workbench without exposing raw patient identities.
+               </p>
+             </div>
+             <div className="w-full md:w-auto mt-6 md:mt-0 flex gap-4">
+                <div className="p-4 bg-white rounded-2xl shadow-sm border border-slate-200 text-center flex-1 min-w-[120px]">
+                   <div className="text-xl font-black text-slate-800 mb-1">PICO</div>
+                   <div className="text-xs font-bold text-slate-500 uppercase">AI Generator</div>
+                </div>
+                <div className="p-4 bg-white rounded-2xl shadow-sm border border-slate-200 text-center flex-1 min-w-[120px]">
+                   <div className="text-xl font-black text-slate-800 mb-1">RLS</div>
+                   <div className="text-xs font-bold text-slate-500 uppercase">Secure Views</div>
+                </div>
              </div>
           </div>
 

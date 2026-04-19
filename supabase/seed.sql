@@ -12,7 +12,30 @@ INSERT INTO facilities (id, name, district, province, facility_type, lat, lng) V
 ('f1000000-0000-0000-0000-000000000005', 'Kasama General Hospital', 'Kasama', 'Northern', 'hospital', -10.2128, 31.1808),
 ('f1000000-0000-0000-0000-000000000006', 'Mongu General Hospital', 'Mongu', 'Western', 'hospital', -15.2484, 23.1274);
 
--- 2. Users (Password: ZNHIPTest2026!)
+-- 2. Auth Users (GoTrue)
+-- Password for all users: ZNHIPTest2026!
+-- Hash generated via: python3 -c "import bcrypt; print(bcrypt.hashpw(b'ZNHIPTest2026!', bcrypt.gensalt(10)).decode())"
+INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, raw_app_meta_data, raw_user_meta_data, created_at, updated_at, role, confirmation_token, recovery_token, email_change_token_new, email_change) VALUES
+('a1000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000000', 'admin@znhip.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000000', 'ministry@znhip.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000000', 'lusaka.officer@znhip.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000000', 'uth.admin@znhip.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000000', 'dr.banda@uth.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000000', 'dr.mwale@ndola.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000007', '00000000-0000-0000-0000-000000000000', 'pharm.chanda@uth.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', ''),
+('a1000000-0000-0000-0000-000000000008', '00000000-0000-0000-0000-000000000000', 'cidrz.research@znhip.gov.zm', '$2b$10$jMSKIlO9pFemRK35nOAi/.CcDdoOQWjlVZknla2E1prvwXID/MK.S', now(), '{"provider":"email","providers":["email"]}', '{}', now(), now(), 'authenticated', '', '', '', '');
+
+INSERT INTO auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at) VALUES
+('a1000000-0000-0000-0000-000000000001', 'admin@znhip.gov.zm', 'a1000000-0000-0000-0000-000000000001', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000001', 'admin@znhip.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000002', 'ministry@znhip.gov.zm', 'a1000000-0000-0000-0000-000000000002', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000002', 'ministry@znhip.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000003', 'lusaka.officer@znhip.gov.zm', 'a1000000-0000-0000-0000-000000000003', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000003', 'lusaka.officer@znhip.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000004', 'uth.admin@znhip.gov.zm', 'a1000000-0000-0000-0000-000000000004', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000004', 'uth.admin@znhip.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000005', 'dr.banda@uth.gov.zm', 'a1000000-0000-0000-0000-000000000005', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000005', 'dr.banda@uth.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000006', 'dr.mwale@ndola.gov.zm', 'a1000000-0000-0000-0000-000000000006', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000006', 'dr.mwale@ndola.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000007', 'pharm.chanda@uth.gov.zm', 'a1000000-0000-0000-0000-000000000007', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000007', 'pharm.chanda@uth.gov.zm')::jsonb, 'email', now(), now(), now()),
+('a1000000-0000-0000-0000-000000000008', 'cidrz.research@znhip.gov.zm', 'a1000000-0000-0000-0000-000000000008', format('{"sub":"%s","email":"%s"}', 'a1000000-0000-0000-0000-000000000008', 'cidrz.research@znhip.gov.zm')::jsonb, 'email', now(), now(), now());
+
+-- 2.5 Public Users Profile
 -- Hash: $2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi
 INSERT INTO users (id, email, password_hash, full_name, role, facility_id, province) VALUES
 ('a1000000-0000-0000-0000-000000000001', 'admin@znhip.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'Super Admin', 'super_admin', NULL, NULL),
@@ -21,7 +44,8 @@ INSERT INTO users (id, email, password_hash, full_name, role, facility_id, provi
 ('a1000000-0000-0000-0000-000000000004', 'uth.admin@znhip.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'UTH Facility Admin', 'facility_admin', 'f1000000-0000-0000-0000-000000000001', 'Lusaka'),
 ('a1000000-0000-0000-0000-000000000005', 'dr.banda@uth.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'Dr. Banda', 'clinician', 'f1000000-0000-0000-0000-000000000001', 'Lusaka'),
 ('a1000000-0000-0000-0000-000000000006', 'dr.mwale@ndola.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'Dr. Mwale', 'clinician', 'f1000000-0000-0000-0000-000000000002', 'Copperbelt'),
-('a1000000-0000-0000-0000-000000000007', 'pharm.chanda@uth.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'Pharmacist Chanda', 'pharmacist', 'f1000000-0000-0000-0000-000000000001', 'Lusaka');
+('a1000000-0000-0000-0000-000000000007', 'pharm.chanda@uth.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'Pharmacist Chanda', 'pharmacist', 'f1000000-0000-0000-0000-000000000001', 'Lusaka'),
+('a1000000-0000-0000-0000-000000000008', 'cidrz.research@znhip.gov.zm', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TiGFQKBZp4GFJqgN3gPhBVCU0XKi', 'CIDRZ Lead Researcher', 'research_partner', NULL, NULL);
 
 -- 3. ICD-11 Codes (Relevant to Zambia)
 INSERT INTO icd11_codes (code, label, chapter, block) VALUES

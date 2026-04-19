@@ -26,13 +26,13 @@ const Shell: React.FC = () => {
   };
 
   const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', roles: ['all'] },
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', roles: ['clinician', 'pharmacist', 'facility_admin', 'provincial_officer', 'ministry_admin', 'super_admin'] },
     { name: 'Digital Lab', icon: Sparkles, path: '/lab', roles: ['clinician', 'ministry_admin', 'super_admin'] },
     { name: 'Record Death', icon: Skull, path: '/deaths/new', roles: ['clinician', 'facility_admin', 'super_admin'] },
-    { name: 'Mortality Records', icon: Activity, path: '/deaths', roles: ['all'] },
+    { name: 'Mortality Records', icon: Activity, path: '/deaths', roles: ['clinician', 'facility_admin', 'provincial_officer', 'ministry_admin', 'super_admin'] },
     { name: 'Drug Inventory', icon: Pill, path: '/inventory', roles: ['pharmacist', 'facility_admin', 'ministry_admin', 'super_admin'] },
     { name: 'Health Alerts', icon: AlertTriangle, path: '/alerts', roles: ['facility_admin', 'provincial_officer', 'ministry_admin', 'super_admin'] },
-    { name: 'Research & AI', icon: FileText, path: '/research', roles: ['ministry_admin', 'super_admin'] },
+    { name: 'Research & AI', icon: FileText, path: '/research/portal', roles: ['research_partner', 'ministry_admin', 'super_admin'] },
   ];
 
   const filteredMenu = menuItems.filter(item => 

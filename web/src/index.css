@@ -37,6 +37,16 @@
   .glass {
     @apply bg-white/50 backdrop-blur-xl border border-white/70 shadow-xl;
   }
+
+  .role-card {
+    @apply relative overflow-hidden bg-white rounded-2xl p-6 border border-slate-100 
+           transition-all duration-300 cursor-pointer shadow-sm
+           hover:shadow-premium hover:-translate-y-1 hover:border-primary/20;
+  }
+
+  .role-card-active {
+    @apply ring-2 ring-primary border-transparent translate-y-[-4px] shadow-premium;
+  }
 }
 
 @layer utilities {

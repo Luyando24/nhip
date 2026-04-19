@@ -1,9 +1,12 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '../lib/supabase';
-import { FileText, Brain, Sparkles, Target, CheckCircle, Clock } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { FileText, Sparkles, Target, CheckCircle, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const Research: React.FC = () => {
+const Portal: React.FC = () => {
+  const navigate = useNavigate();
+
   const { data: proposals, isLoading } = useQuery({
     queryKey: ['research-proposals'],
     queryFn: async () => {
@@ -16,17 +19,6 @@ const Research: React.FC = () => {
       return data;
     }
   });
-
-  if (isLoading) {
-    return (
-      <div className="animate-pulse space-y-6">
-        <div className="h-12 bg-slate-200 rounded-xl w-1/3"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[1, 2, 3].map(i => <div key={i} className="h-64 bg-slate-200 rounded-xl"></div>)}
-        </div>
-      </div>
-    );
-  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -45,20 +37,7 @@ const Research: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-            <Brain className="text-primary" size={32} />
-            Research & AI Intelligence
-          </h1>
-          <p className="text-slate-500 font-medium">Algorithmic study proposals derived from real-time mortality telemetry.</p>
-        </div>
-        <button className="btn-primary flex items-center gap-2">
-          <Sparkles size={18} fill="currentColor" /> Generate Hypothesis
-        </button>
-      </header>
-
+    <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {proposals?.map((proposal: any) => (
           <div key={proposal.id} className="card group hover:shadow-lg transition-all border-t-4 border-t-primary relative overflow-hidden">
@@ -96,24 +75,18 @@ const Research: React.FC = () => {
             </div>
             
             <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-400">Generated automatically by telemetry</span>
-              <button className="text-sm font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1">
-                View Dataset &rarr;
+              <button 
+                onClick={() => navigate(`/research/questions/${proposal.id}`)}
+                className="btn-primary py-2 px-4 flex items-center gap-2 text-sm"
+              >
+                <Sparkles size={16} /> Refine & Generate AI Questions
               </button>
             </div>
           </div>
         ))}
-
-        {proposals?.length === 0 && (
-          <div className="lg:col-span-2 py-20 text-center bg-white border border-dashed border-slate-300 rounded-2xl">
-            <Brain className="mx-auto text-slate-300 mb-4" size={48} />
-            <h3 className="text-xl font-bold text-slate-700">No Proposals Generated</h3>
-            <p className="text-slate-500 font-medium mt-2">The AI module requires more longitudinal data to formulate valid research hypotheses.</p>
-          </div>
-        )}
       </div>
     </div>
   );
 };
 
-export default Research;
+export default Portal;

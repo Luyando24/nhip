@@ -8,9 +8,14 @@ import Dashboard from '../pages/Dashboard';
 import MortalityRecords from '../pages/MortalityRecords';
 import RecordDeath from '../pages/RecordDeath';
 import HealthAlerts from '../pages/HealthAlerts';
-import Research from '../pages/Research';
 import Lab from '../pages/Lab';
 import Inventory from '../pages/Inventory';
+import ResearchLayout from '../pages/research/ResearchLayout';
+import Portal from '../pages/research/Portal';
+import Instruments from '../pages/research/Instruments';
+import Analysis from '../pages/research/Analysis';
+import Questions from '../pages/research/Questions';
+import Impact from '../pages/research/Impact';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -35,7 +40,14 @@ const AppRouter: React.FC = () => {
           <Route path="deaths" element={<MortalityRecords />} />
           <Route path="deaths/new" element={<RecordDeath />} />
           <Route path="alerts" element={<HealthAlerts />} />
-          <Route path="research" element={<Research />} />
+          <Route path="research" element={<ResearchLayout />}>
+            <Route index element={<Navigate to="portal" replace />} />
+            <Route path="portal" element={<Portal />} />
+            <Route path="instruments" element={<Instruments />} />
+            <Route path="analysis" element={<Analysis />} />
+            <Route path="questions/:id" element={<Questions />} />
+            <Route path="impact" element={<Impact />} />
+          </Route>
           <Route path="lab" element={<Lab />} />
           <Route path="inventory" element={<Inventory />} />
           

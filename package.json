@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm run dev --prefix web",
-    "install": "npm install --prefix web"
+    "build": "npm run build --prefix web && npm run build --prefix api",
+    "install": "npm install --prefix web && npm install --prefix api"
   }
 }
