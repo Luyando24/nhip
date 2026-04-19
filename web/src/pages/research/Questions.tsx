@@ -26,7 +26,11 @@ const Questions = () => {
 
   const generateQuestions = async () => {
     setIsGenerating(true);
-    try {
+      if (!accessToken) {
+        alert("Authentication Error: No access token found. Please log out and log back in.");
+        return;
+      }
+
       // Get aggregated view data constraint
       const { data: viewData } = await supabase.from('research_mortality_view').select('*').limit(50);
       

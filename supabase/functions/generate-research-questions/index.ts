@@ -29,10 +29,11 @@ serve(async (req) => {
     if (authError || !user) {
       console.error('[TRACE] Auth Check Failed:', authError);
       return new Response(JSON.stringify({ 
+        success: false,
         error: 'Unauthorized', 
         details: authError?.message || 'User session invalid or Authorization header missing' 
       }), {
-        status: 401,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
@@ -51,10 +52,11 @@ serve(async (req) => {
     if (!userData || !['research_partner', 'ministry_admin'].includes(userData.role)) {
        console.warn('[TRACE] Access Denied: Insufficient role', userData?.role);
        return new Response(JSON.stringify({ 
+         success: false,
          error: 'Forbidden',
          details: `Your current role (${userData?.role || 'unknown'}) does not have permission to generate research questions.`
        }), {
-        status: 403,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
