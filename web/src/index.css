@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface text-slate-900 font-sans antialiased;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-6 py-2.5 rounded-lg font-medium 
+           hover:bg-primary-light transition-all duration-200 
+           shadow-sm hover:shadow-md disabled:opacity-50;
+  }
+  
+  .card {
+    @apply bg-surface-paper border border-surface-border rounded-xl p-6 shadow-premium;
+  }
+  
+  .input-field {
+    @apply w-full bg-white border border-surface-border rounded-lg px-4 py-2.5
+           focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all;
+  }
+
+  .nav-link {
+    @apply flex items-center px-4 py-3 text-slate-600 rounded-lg hover:bg-primary/5 hover:text-primary transition-all font-medium;
+  }
+  
+  .nav-link-active {
+    @apply bg-primary text-white hover:bg-primary hover:text-white shadow-md;
+  }
+
+  .glass {
+    @apply bg-white/50 backdrop-blur-xl border border-white/70 shadow-xl;
+  }
+}
+
+@layer utilities {
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  .animate-float-delayed {
+    animation: float 6s ease-in-out 3s infinite;
+  }
+  .animate-float-fast {
+    animation: float 4s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-surface;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}

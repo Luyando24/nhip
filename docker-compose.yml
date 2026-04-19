@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: znhip-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-znhip}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - znhip-db-data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d
+    networks:
+      - znhip-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: znhip-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - znhip-redis-data:/data
+    networks:
+      - znhip-net
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: znhip-api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-znhip}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-supersecret}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-superrefreshsecret}
+      - AI_SERVICE_URL=http://ai:8000
+      - NODE_ENV=development
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - znhip-net
+
+  ai:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: znhip-ai
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DATABASE_URL=postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@db:5432/${DB_NAME:-znhip}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - znhip-net
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: znhip-web
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    networks:
+      - znhip-net
+
+networks:
+  znhip-net:
+    driver: bridge
+
+volumes:
+  znhip-db-data:
+  znhip-redis-data:

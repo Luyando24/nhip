@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+psycopg2-binary
+pandas
+numpy
+scikit-learn
+python-dotenv
+httpx
+python-multipart
+pydantic
