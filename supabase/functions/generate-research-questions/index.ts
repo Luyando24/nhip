@@ -16,39 +16,60 @@ serve(async (req) => {
   }
 
   try {
+    const authHeader = req.headers.get('Authorization');
+    console.log('[TRACE] Authorization Header Presence:', !!authHeader);
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+      { global: { headers: { Authorization: authHeader! } } }
     );
 
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) {
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      console.error('[TRACE] Auth Check Failed:', authError);
       return new Response(JSON.stringify({ 
         error: 'Unauthorized', 
-        details: 'User session invalid or Authorization header missing' 
+        details: authError?.message || 'User session invalid or Authorization header missing' 
       }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
+    console.log('[TRACE] User Identified:', user.id);
+
     // Optional: Extract user role from users table
-    const { data: userData } = await supabaseClient.from('users').select('role').eq('id', user.id).single();
+    const { data: userData, error: roleError } = await supabaseClient.from('users').select('role').eq('id', user.id).single();
+    
+    if (roleError) {
+      console.error('[TRACE] Role Fetch Error:', roleError);
+    } else {
+      console.log('[TRACE] User Role found:', userData?.role);
+    }
+
     if (!userData || !['research_partner', 'ministry_admin'].includes(userData.role)) {
-       return new Response(JSON.stringify({ error: 'Forbidden' }), {
+       console.warn('[TRACE] Access Denied: Insufficient role', userData?.role);
+       return new Response(JSON.stringify({ 
+         error: 'Forbidden',
+         details: `Your current role (${userData?.role || 'unknown'}) does not have permission to generate research questions.`
+       }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const { proposalId, studyDesign, additionalContext, contextData } = await req.json();
+    const payload = await req.json();
+    const { proposalId, studyDesign, additionalContext, contextData } = payload;
+    console.log('[TRACE] Request Payload Received for Proposal:', proposalId);
 
     const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!anthropicApiKey) {
-      throw new Error('ANTHROPIC_API_KEY is not set');
+      console.error('[TRACE] Missing ANTHROPIC_API_KEY secret');
+      throw new Error('ANTHROPIC_API_KEY is not set in Supabase secrets');
     }
 
+    // ... (systemPrompt definition remains same) ...
     const systemPrompt = `You are an epidemiology research assistant supporting health researchers
 in Zambia. You generate precise, fundable research questions based on
 mortality surveillance data. You always structure questions in PICO format
@@ -82,6 +103,7 @@ Anonymized Mortality Statistics & Context:
 ${JSON.stringify(contextData, null, 2)}
 `;
 
+    console.log('[TRACE] Calling Anthropic API...');
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -100,16 +122,42 @@ ${JSON.stringify(contextData, null, 2)}
 
     if (!anthropicResponse.ok) {
       const err = await anthropicResponse.text();
-      console.error('Anthropic API Error:', err);
-      throw new Error('Failed to generate questions from Claude AI');
+      console.error('[TRACE] Anthropic API Error Body:', err);
+      return new Response(JSON.stringify({ error: 'AI_SERVICE_ERROR', details: err }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     const aiData = await anthropicResponse.json();
-    const content = aiData.content[0].text;
+    let content = aiData.content[0].text;
+    console.log('[TRACE] Raw AI Response received');
+
+    // Robust JSON cleaning: Claude often wraps JSON in markdown blocks
+    if (content.includes('```json')) {
+      content = content.split('```json')[1].split('```')[0].trim();
+    } else if (content.includes('```')) {
+      content = content.split('```')[1].split('```')[0].trim();
+    }
+    
+    // Final check for trailing/leading text
+    const jsonStart = content.indexOf('{');
+    const jsonEnd = content.lastIndexOf('}');
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+      content = content.substring(jsonStart, jsonEnd + 1);
+    }
     
     // Parse JSON
-    const parsed = JSON.parse(content);
+    let parsed;
+    try {
+      parsed = JSON.parse(content);
+    } catch (parseErr) {
+      console.error('[TRACE] JSON Parse Failure:', parseErr, 'Content:', content);
+      throw new Error('Claude AI returned malformed JSON');
+    }
     
+    console.log('[TRACE] Successfully parsed AI response. Persisting to DB...');
+
     // Save to database
     const { data: savedQuestions, error: insertError } = await supabaseClient
       .from('research_questions')
@@ -131,16 +179,21 @@ ${JSON.stringify(contextData, null, 2)}
       .single();
 
     if (insertError) {
-      throw insertError;
+      console.error('[TRACE] Database Insert Error:', insertError);
+      return new Response(JSON.stringify({ error: 'DATABASE_ERROR', details: insertError.message }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
+    console.log('[TRACE] Successfully saved and returning questions.');
     return new Response(JSON.stringify(savedQuestions), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error: any) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    console.error('[TRACE] Global Catch Error:', error);
+    return new Response(JSON.stringify({ error: 'SYSTEM_ERROR', details: error.message }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     });

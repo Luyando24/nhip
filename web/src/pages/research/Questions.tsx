@@ -44,16 +44,36 @@ const Questions = () => {
       
       if (funcError) {
         // Log details to console for the developer
-        console.error('Edge Function Error:', funcError);
+        console.error('Edge Function Diagnostic Error:', funcError);
         throw funcError;
       }
       
       setGeneratedResult(data);
     } catch (err: any) {
-      console.error('AI Generation Failure:', err);
-      // Try to parse more details if it's a Supabase error
-      const detail = err.context?.error || err.message;
-      alert("Intelligence Interface Error: " + detail);
+      console.error('Detailed AI Generation Failure:', err);
+      
+      // Try to extract the richest detailed message possible
+      let errorTitle = "Intelligence Interface Error";
+      let errorDetail = err.message || "An unknown error occurred";
+      let recommendation = "";
+
+      if (err.context?.error === 'Forbidden') {
+        errorTitle = "Access Denied";
+        errorDetail = err.context.details || "Your user role does not have permission to generate research intelligence.";
+        recommendation = "Tip: Verify that your user role is set to 'research_partner' in the users table.";
+      } else if (err.context?.error === 'AI_SERVICE_ERROR') {
+        errorTitle = "AI Provider Error";
+        errorDetail = "The Claude AI service returned an error.";
+        recommendation = "Tip: Check if your ANTHROPIC_API_KEY is correct and has sufficient balance.";
+      } else if (err.context?.error === 'DATABASE_ERROR') {
+        errorTitle = "Persistence Error";
+        errorDetail = "Failed to save the generated questions to the database.";
+        recommendation = `Technical Detail: ${err.context.details}`;
+      } else if (err.context?.details) {
+        errorDetail = err.context.details;
+      }
+
+      alert(`${errorTitle}\n\n${errorDetail}${recommendation ? '\n\n' + recommendation : ''}`);
     } finally {
       setIsGenerating(false);
     }
