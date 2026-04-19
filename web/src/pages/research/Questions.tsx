@@ -45,7 +45,7 @@ const Questions = () => {
       if (funcError) {
         // Log details to console for the developer
         console.error('Edge Function Error:', funcError);
-        throw new Error(funcError.message);
+        throw funcError;
       }
       
       setGeneratedResult(data);
