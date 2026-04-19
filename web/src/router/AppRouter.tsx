@@ -15,6 +15,8 @@ import Portal from '../pages/research/Portal';
 import Instruments from '../pages/research/Instruments';
 import Analysis from '../pages/research/Analysis';
 import Questions from '../pages/research/Questions';
+import Demographics from '../pages/research/Demographics';
+import Trends from '../pages/research/Trends';
 import Impact from '../pages/research/Impact';
 import PublicCollection from '../pages/research/PublicCollection';
 
@@ -45,6 +47,8 @@ const AppRouter: React.FC = () => {
           <Route path="research" element={<ResearchLayout />}>
             <Route index element={<Navigate to="portal" replace />} />
             <Route path="portal" element={<Portal />} />
+            <Route path="demographics" element={<Demographics />} />
+            <Route path="trends" element={<Trends />} />
             <Route path="instruments" element={<Instruments />} />
             <Route path="analysis" element={<Analysis />} />
             <Route path="questions/:id" element={<Questions />} />

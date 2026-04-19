@@ -1,13 +1,15 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
-import { Brain, FileSpreadsheet, BarChart2, TrendingUp } from 'lucide-react';
+import { Brain, FileSpreadsheet, BarChart2, TrendingUp, Users, LineChart } from 'lucide-react';
 
 const ResearchLayout: React.FC = () => {
   const { user } = useAuthStore();
 
   const tabs = [
     { name: 'Research Portal', path: '/research/portal', icon: Brain, roles: ['research_partner', 'ministry_admin', 'super_admin'] },
+    { name: 'Demographic Insights', path: '/research/demographics', icon: Users, roles: ['research_partner', 'ministry_admin', 'super_admin'] },
+    { name: 'Temporal Trends', path: '/research/trends', icon: LineChart, roles: ['research_partner', 'ministry_admin', 'super_admin'] },
     { name: 'Instruments', path: '/research/instruments', icon: FileSpreadsheet, roles: ['research_partner', 'ministry_admin', 'super_admin'] },
     { name: 'Analysis Workbench', path: '/research/analysis', icon: BarChart2, roles: ['research_partner', 'ministry_admin', 'super_admin'] },
     { name: 'Impact Dashboard', path: '/research/impact', icon: TrendingUp, roles: ['ministry_admin', 'super_admin'] },
