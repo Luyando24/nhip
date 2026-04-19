@@ -43,37 +43,25 @@ const Questions = () => {
       });
       
       if (funcError) {
-        // Log details to console for the developer
-        console.error('Edge Function Diagnostic Error:', funcError);
+        console.error('Network/Auth Error:', funcError);
         throw funcError;
+      }
+
+      if (data && data.success === false) {
+          // This is our high-transparency error from the Edge Function
+          console.error('AI Service Detailed Error:', data);
+          let rec = "";
+          if (data.error === 'Forbidden') rec = "Tip: Your user role must be 'research_partner'.";
+          if (data.error === 'AI_SERVICE_ERROR') rec = "Tip: Verify your Anthropic API Key and credits.";
+          
+          alert(`Intelligence Protocol Error (${data.error})\n\n${data.details || 'No details'}\n\n${rec}`);
+          return;
       }
       
       setGeneratedResult(data);
-    } catch (err: any) {
-      console.error('Detailed AI Generation Failure:', err);
-      
-      // Try to extract the richest detailed message possible
-      let errorTitle = "Intelligence Interface Error";
-      let errorDetail = err.message || "An unknown error occurred";
-      let recommendation = "";
-
-      if (err.context?.error === 'Forbidden') {
-        errorTitle = "Access Denied";
-        errorDetail = err.context.details || "Your user role does not have permission to generate research intelligence.";
-        recommendation = "Tip: Verify that your user role is set to 'research_partner' in the users table.";
-      } else if (err.context?.error === 'AI_SERVICE_ERROR') {
-        errorTitle = "AI Provider Error";
-        errorDetail = "The Claude AI service returned an error.";
-        recommendation = "Tip: Check if your ANTHROPIC_API_KEY is correct and has sufficient balance.";
-      } else if (err.context?.error === 'DATABASE_ERROR') {
-        errorTitle = "Persistence Error";
-        errorDetail = "Failed to save the generated questions to the database.";
-        recommendation = `Technical Detail: ${err.context.details}`;
-      } else if (err.context?.details) {
-        errorDetail = err.context.details;
-      }
-
-      alert(`${errorTitle}\n\n${errorDetail}${recommendation ? '\n\n' + recommendation : ''}`);
+    } catch (error: any) {
+      console.error('[TRACE] Global Catch Error:', error);
+      alert("System Interface Error\n\n" + (error.message || 'An unexpected error occurred.'));
     } finally {
       setIsGenerating(false);
     }

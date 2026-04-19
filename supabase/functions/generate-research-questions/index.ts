@@ -123,42 +123,42 @@ ${JSON.stringify(contextData, null, 2)}
     if (!anthropicResponse.ok) {
       const err = await anthropicResponse.text();
       console.error('[TRACE] Anthropic API Error Body:', err);
-      return new Response(JSON.stringify({ error: 'AI_SERVICE_ERROR', details: err }), {
-        status: 400,
+      return new Response(JSON.stringify({ 
+        success: false,
+        error: 'AI_SERVICE_ERROR', 
+        details: err 
+      }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     const aiData = await anthropicResponse.json();
     let content = aiData.content[0].text;
-    console.log('[TRACE] Raw AI Response received');
-
-    // Robust JSON cleaning: Claude often wraps JSON in markdown blocks
+    
     if (content.includes('```json')) {
       content = content.split('```json')[1].split('```')[0].trim();
     } else if (content.includes('```')) {
       content = content.split('```')[1].split('```')[0].trim();
     }
     
-    // Final check for trailing/leading text
     const jsonStart = content.indexOf('{');
     const jsonEnd = content.lastIndexOf('}');
     if (jsonStart !== -1 && jsonEnd !== -1) {
       content = content.substring(jsonStart, jsonEnd + 1);
     }
     
-    // Parse JSON
     let parsed;
     try {
       parsed = JSON.parse(content);
     } catch (parseErr) {
-      console.error('[TRACE] JSON Parse Failure:', parseErr, 'Content:', content);
-      throw new Error('Claude AI returned malformed JSON');
+      console.error('[TRACE] JSON Parse Failure:', parseErr);
+      return new Response(JSON.stringify({ success: false, error: 'PARSE_ERROR', details: 'AI returned malformed JSON' }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
     
-    console.log('[TRACE] Successfully parsed AI response. Persisting to DB...');
-
-    // Save to database
     const { data: savedQuestions, error: insertError } = await supabaseClient
       .from('research_questions')
       .insert({
@@ -180,22 +180,25 @@ ${JSON.stringify(contextData, null, 2)}
 
     if (insertError) {
       console.error('[TRACE] Database Insert Error:', insertError);
-      return new Response(JSON.stringify({ error: 'DATABASE_ERROR', details: insertError.message }), {
-        status: 400,
+      return new Response(JSON.stringify({ success: false, error: 'DATABASE_ERROR', details: insertError.message }), {
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    console.log('[TRACE] Successfully saved and returning questions.');
-    return new Response(JSON.stringify(savedQuestions), {
+    return new Response(JSON.stringify({ success: true, data: savedQuestions }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error: any) {
     console.error('[TRACE] Global Catch Error:', error);
-    return new Response(JSON.stringify({ error: 'SYSTEM_ERROR', details: error.message }), {
+    return new Response(JSON.stringify({ 
+      success: false,
+      error: 'SYSTEM_ERROR', 
+      details: error.message 
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
+      status: 200,
     });
   }
 });
