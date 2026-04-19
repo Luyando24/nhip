@@ -26,6 +26,7 @@ const Questions = () => {
 
   const generateQuestions = async () => {
     setIsGenerating(true);
+    try {
       if (!accessToken) {
         alert("Authentication Error: No access token found. Please log out and log back in.");
         return;
