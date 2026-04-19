@@ -33,11 +33,8 @@ const Landing: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#fafafc] text-slate-900 overflow-hidden selection:bg-primary/20 font-sans">
       
-      {/* Abstract Glowing Backgrounds */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] mix-blend-multiply animate-blob"></div>
-        <div className="absolute top-[20%] left-[-10%] w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[100px] mix-blend-multiply animate-blob animation-delay-4000"></div>
-        <div className="absolute bottom-[-10%] right-[10%] w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] mix-blend-multiply animate-blob animation-delay-2000"></div>
+      {/* Abstract Backgrounds (Removed gradients/blobs) */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-50/50">
       </div>
 
       <nav className="relative z-50 w-full px-8 py-6 flex items-center justify-between max-w-7xl mx-auto backdrop-blur-md bg-white/50 border-b border-slate-200/50 rounded-b-3xl">
@@ -71,7 +68,7 @@ const Landing: React.FC = () => {
           
           <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black tracking-tight leading-[1.05] mb-8 text-slate-900 drop-shadow-sm">
             Empowering Zambia's <br className="hidden md:block"/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-500 to-indigo-600">
+            <span className="text-primary">
               Health Intelligence.
             </span>
           </h2>
@@ -166,7 +163,7 @@ const Landing: React.FC = () => {
           <div className="md:col-span-2 group relative overflow-hidden bg-white rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-500 p-8 flex flex-col justify-end">
              {/* Decorative Background grid inside box */}
              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:14px_24px]"></div>
-             <div className="absolute top-8 right-8 w-64 h-64 bg-primary/5 rounded-full blur-[50px] group-hover:bg-primary/10 transition-colors"></div>
+             <div className="absolute top-8 right-8 w-64 h-64 bg-slate-50 rounded-full transition-colors"></div>
              
              <div className="relative z-10 max-w-md">
                <div className="w-12 h-12 bg-slate-900 rounded-xl flex items-center justify-center mb-6">
@@ -207,7 +204,7 @@ const Landing: React.FC = () => {
 
           {/* Medium Bento - Health Alerts */}
           <div className="md:col-span-2 group relative overflow-hidden bg-slate-900 rounded-3xl border border-slate-800 shadow-xl transition-all duration-500 p-8 flex items-center">
-             <div className="absolute top-0 right-0 w-64 h-full bg-gradient-to-l from-emerald-500/20 to-transparent"></div>
+             <div className="absolute top-0 right-0 w-64 h-full bg-slate-800/50"></div>
              
              <div className="relative z-10">
                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/10 border border-white/10 mb-4">
@@ -226,7 +223,7 @@ const Landing: React.FC = () => {
           </div>
 
           {/* Large Hero Bento - Research Partners */}
-          <div className="md:col-span-3 group relative overflow-hidden bg-gradient-to-br from-indigo-50 to-primary/5 rounded-3xl border border-indigo-100 shadow-sm hover:shadow-xl transition-all duration-500 p-8 flex flex-col md:flex-row items-center gap-8">
+          <div className="md:col-span-3 group relative overflow-hidden bg-slate-50 rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-500 p-8 flex flex-col md:flex-row items-center gap-8">
              <div className="relative z-10 flex-1">
                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-indigo-200 mb-4 shadow-sm">
                  <BrainCircuit size={14} className="text-indigo-600" />

@@ -101,7 +101,7 @@ const Questions = () => {
       </div>
 
       {generatedResult && (
-        <div className="bg-gradient-to-br from-indigo-50 to-primary/5 p-8 rounded-3xl border border-indigo-100 shadow-xl mt-8 animate-in fade-in slide-in-from-bottom-4">
+        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl mt-8 animate-in fade-in slide-in-from-bottom-4">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-primary text-white p-2 rounded-lg"><Brain size={24} /></div>
             <h3 className="text-2xl font-black text-slate-900">Generated Implementation Protocol</h3>

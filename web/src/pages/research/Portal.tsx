@@ -42,7 +42,6 @@ const Portal: React.FC = () => {
         {proposals?.map((proposal: any) => (
           <div key={proposal.id} className="card group hover:shadow-lg transition-all border-t-4 border-t-primary relative overflow-hidden">
             {/* Background design */}
-            <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
             
             <div className="flex justify-between items-start mb-4">
               <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border ${getStatusColor(proposal.status)}`}>

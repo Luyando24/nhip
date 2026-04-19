@@ -16,6 +16,7 @@ import Instruments from '../pages/research/Instruments';
 import Analysis from '../pages/research/Analysis';
 import Questions from '../pages/research/Questions';
 import Impact from '../pages/research/Impact';
+import PublicCollection from '../pages/research/PublicCollection';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -29,6 +30,7 @@ const AppRouter: React.FC = () => {
         {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/collect/:id" element={<PublicCollection />} />
         
         {/* Protected Application Routes */}
         <Route element={

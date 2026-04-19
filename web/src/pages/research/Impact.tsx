@@ -5,7 +5,6 @@ const Impact = () => {
   return (
     <div className="space-y-8">
        <div className="p-8 bg-slate-900 rounded-3xl text-white relative overflow-hidden flex justify-between items-center isolate">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/4"></div>
           
           <div className="z-10">
             <h2 className="text-3xl font-bold tracking-tight mb-2">Research Impact</h2>
@@ -38,7 +37,7 @@ const Impact = () => {
             <div className="text-3xl font-black text-slate-800">7</div>
             <div className="text-sm font-semibold text-slate-500 uppercase mt-1">Publications</div>
           </div>
-          <div className="bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 rounded-2xl shadow-lg text-center text-white">
+          <div className="bg-emerald-600 p-6 rounded-2xl shadow-lg text-center text-white">
             <ShieldCheck size={24} className="mx-auto text-white/50 mb-3" />
             <div className="text-3xl font-black">3</div>
             <div className="text-sm font-semibold text-emerald-100 uppercase mt-1">Policies Changed</div>

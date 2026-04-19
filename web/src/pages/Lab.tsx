@@ -64,8 +64,8 @@ const Lab: React.FC = () => {
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col bg-white rounded-2xl border border-surface-border shadow-xl overflow-hidden relative group">
-      {/* Decorative background glow mimicking Gemini/AI UI */}
-      <div className="absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+      {/* Decorative background (Removed glow) */}
+      <div className="absolute top-0 inset-x-0 h-48 bg-slate-50/50 pointer-events-none"></div>
 
       <header className="px-8 py-5 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md z-10">
         <div className="flex items-center gap-3">
@@ -122,7 +122,7 @@ const Lab: React.FC = () => {
             </div>
             <div className="bg-white border border-slate-100 shadow-sm rounded-2xl rounded-tl-none p-5 flex items-center gap-3">
               <Loader2 size={18} className="animate-spin text-primary" />
-              <span className="text-sm font-semibold text-slate-500 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent animate-pulse">
+              <span className="text-sm font-semibold text-slate-500 animate-pulse">
                 Synthesizing diagnosis & cross-referencing inventory...
               </span>
             </div>
