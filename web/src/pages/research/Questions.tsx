@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
+import { useAuthStore } from '../../store/authStore';
 import { Brain, ArrowLeft, Loader2, Sparkles, AlertCircle, Target, CheckCircle } from 'lucide-react';
 
 const Questions = () => {
@@ -10,6 +11,7 @@ const Questions = () => {
 
   const [studyDesign, setStudyDesign] = useState('cross_sectional');
   const [context, setContext] = useState('');
+  const { accessToken } = useAuthStore();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResult, setGeneratedResult] = useState<any>(null);
 
@@ -29,6 +31,9 @@ const Questions = () => {
       const { data: viewData } = await supabase.from('research_mortality_view').select('*').limit(50);
       
       const { data, error: funcError } = await supabase.functions.invoke('generate-research-questions', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        },
         body: {
           proposalId: id,
           studyDesign,

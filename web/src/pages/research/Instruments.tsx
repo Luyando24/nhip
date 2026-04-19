@@ -99,15 +99,18 @@ const Instruments = () => {
   const [selectedInst, setSelectedInst] = useState<any>(null);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
 
-  // Fetch existing instruments
-  const { data: instruments, isLoading } = useQuery({
-    queryKey: ['research-instruments'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('research_instruments').select('*').order('created_at', { ascending: false });
-      if (error) throw error;
-      return data;
-    }
-  });
+    const { data: instruments, isLoading } = useQuery({
+      queryKey: ['research-instruments'],
+      queryFn: async () => {
+        const { data, error } = await supabase
+          .from('research_instruments')
+          .select('*')
+          .neq('status', 'archived')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        return data;
+      }
+    });
 
   const slugify = (text: string) => {
     return text.toLowerCase()
@@ -124,7 +127,14 @@ const Instruments = () => {
 
   const addField = () => {
     const id = Date.now().toString();
-    setFields([...fields, { id, label: 'New Field', type: 'text', variableName: `var_${id}` }]);
+    const randomSuffix = Math.random().toString(36).substring(2, 7);
+    setFields([...fields, { 
+      id, 
+      label: 'New Field', 
+      type: 'text', 
+      variableName: `var_${randomSuffix}`,
+      _isAuto: true // Track if we should keep syncing with the label
+    }]);
   };
 
   const updateField = (id: string, updates: any) => {
@@ -132,14 +142,20 @@ const Instruments = () => {
       if (f.id === id) {
         let newField = { ...f, ...updates };
         
-        // Auto-update variable name if it was a default or empty
-        const isDefault = f.variableName.startsWith('var_') || 
+        // If user manually edits the variable name, stop auto-syncing
+        if (updates.variableName) {
+           newField._isAuto = false;
+        }
+
+        // Auto-update variable name if it's still in auto-sync mode or matches default patterns
+        const isDefault = f._isAuto || 
+                         f.variableName.startsWith('var_') || 
                          f.variableName === 'znhip_new_var' || 
-                         f.variableName === 'znhip_patient_uid' || 
                          !f.variableName;
                          
         if (updates.label && isDefault) {
           newField.variableName = slugify(updates.label) || f.variableName;
+          newField._isAuto = true; // Still in auto-sync mode
         }
         return newField;
       }
@@ -194,13 +210,18 @@ const Instruments = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this instrument? This will not remove already collected data but the form will no longer be accessible.")) return;
+    if (!confirm("Are you sure you want to archive this instrument? This will preserve collected data but the form will no longer be accessible for new entries.")) return;
     
-    const { error } = await supabase.from('research_instruments').delete().eq('id', id);
+    // Switch to Soft Delete / Archiving to prevent foreign key violations with collected data
+    const { error } = await supabase
+      .from('research_instruments')
+      .update({ status: 'archived' })
+      .eq('id', id);
+
     if (!error) {
        queryClient.invalidateQueries({ queryKey: ['research-instruments'] });
     } else {
-       alert("Delete failed: " + error.message);
+       alert("Action failed: " + error.message);
     }
   };
 
