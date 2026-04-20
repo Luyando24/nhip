@@ -105,7 +105,9 @@ Anonymized Mortality Statistics & Context:
 ${JSON.stringify(contextData, null, 2)}
 `;
 
-    console.log('[TRACE] Calling Anthropic API...');
+    console.log(`[TRACE] Anthropic call for design: ${studyDesign}, context len: ${promptContext.length}`);
+
+    const startTime = Date.now();
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -122,13 +124,16 @@ ${JSON.stringify(contextData, null, 2)}
       })
     });
 
+    const elapsed = Date.now() - startTime;
+    console.log(`[TRACE] Anthropic API returned with status: ${anthropicResponse.status} in ${elapsed}ms`);
+
     if (!anthropicResponse.ok) {
       const err = await anthropicResponse.text();
       console.error('[TRACE] Anthropic API Error Body:', err);
       return new Response(JSON.stringify({ 
         success: false,
         error: 'AI_SERVICE_ERROR', 
-        details: err 
+        details: `Claude API Error (${anthropicResponse.status}): ${err}` 
       }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

@@ -64,7 +64,19 @@ const Questions = () => {
         })
       });
 
-      const result = await response.json();
+      let result: any;
+      const contentType = response.headers.get('content-type');
+      
+      try {
+        if (contentType && contentType.includes('application/json')) {
+          result = await response.json();
+        } else {
+          const text = await response.text();
+          result = { success: false, error: 'INFRASTRUCTURE_ERROR', details: text || `Status ${response.status}: ${response.statusText}` };
+        }
+      } catch (e: any) {
+        result = { success: false, error: 'PARSE_ERROR', details: 'Failed to parse service response.' };
+      }
 
       if (!response.ok || result.success === false) {
           // This is our high-transparency error from the Edge Function
@@ -72,8 +84,9 @@ const Questions = () => {
           let rec = "";
           if (result.error === 'Forbidden') rec = "Tip: Your user role must be 'research_partner'.";
           if (result.error === 'AI_SERVICE_ERROR') rec = "Tip: Verify your Anthropic API Key and credits.";
+          if (result.error === 'INFRASTRUCTURE_ERROR') rec = "Tip: This usually means the Supabase function failed to start or was not found.";
           
-          alert(`Intelligence Protocol Error (${result.error || response.status})\n\n${result.details || 'No details'}\n\n${rec}`);
+          alert(`Intelligence Protocol Error (${result.error || response.status})\n\n${result.details || 'No details available'}\n\n${rec}`);
           return;
       }
       
